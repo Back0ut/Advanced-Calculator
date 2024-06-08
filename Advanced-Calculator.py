@@ -7,7 +7,7 @@ import numpy as np
 class CalculatorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Calculator")
+        self.root.title("Plotting an Arithmetic Calculator")
 
         self.entry = ttk.Entry(root, width=40)
         self.entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
@@ -41,6 +41,7 @@ class CalculatorApp:
        
         elif char.lower() == 'plot':
             self.plot_function()
+        
         else:
             self.entry.insert(tk.END, char)
 
