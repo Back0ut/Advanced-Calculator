@@ -22,8 +22,7 @@ class CalculatorApp:
 
         for button in buttons:
             text = button[0]
-            row = button[1]
-            col = button[2]
+            row, col = button[1], button[2]
             cs = button[3] if len(button) == 4 else 1
             
             ttk.Button(root, text=text, command=lambda t=text: self.on_button_click(t)).grid(row=row, column=col, columnspan=cs, padx=5, pady=5)
@@ -40,6 +39,7 @@ class CalculatorApp:
                 self.entry.insert(tk.END, "Error")
        
         elif char.lower() == 'plot':
+            # Go to line 60 to see plot_function function    
             self.plot_function()
         
         else:
@@ -49,24 +49,28 @@ class CalculatorApp:
         try:
             func, params = expression.split('(')
             params = params.strip(')').split(',')
+            
             if func in ['sin', 'cos', 'tan']:
                 return f'np.{func}(np.linspace({params[0]}, {params[1]}, {params[2]}))'
         
         except:
             return expression
 
+    # Does the plotting
     def plot_function(self):
         try:
             expression = self.entry.get()
             parsed_expression = self.parse_expression(expression)
-            x = np.linspace(-10, 10, 400)
-            y = eval(parsed_expression)
+            x, y = np.linspace(-10, 10, 400), eval(parsed_expression)
+            
+            # Go to line 70 to see plot function
             self.plot(x, y, expression)
         
         except Exception as e:
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, "Invalid Expression")
 
+    # Shows the graph plotted
     def plot(self, x, y, expression):
         plt.figure()
         plt.plot(x, y)
