@@ -59,7 +59,7 @@ class CalculatorApp:
         except Exception:
             pass
         
-        raise ValueError("Invalid expression format")
+        raise ValueError('Invalid expression format')
 
     def plot_function(self):
         try:
