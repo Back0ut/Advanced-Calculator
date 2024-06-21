@@ -8,8 +8,10 @@ class CalculatorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Plotting an Arithmetic Calculator")
+        self.create_widgets()
 
-        self.entry = ttk.Entry(root, width=40)
+    def create_widgets(self):
+        self.entry = ttk.Entry(self.root, width=40)
         self.entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
 
         buttons = [
@@ -20,66 +22,70 @@ class CalculatorApp:
             ('Plot', 5, 2, 2)
         ]
 
-        for button in buttons:
-            text = button[0]
-            row, col = button[1], button[2]
-            cs = button[3] if len(button) == 4 else 1
-            
-            ttk.Button(root, text=text, command=lambda t=text: self.on_button_click(t)).grid(row=row, column=col, columnspan=cs, padx=5, pady=5)
+        for text, row, col, *cs in buttons:
+            cs = cs[0] if cs else 1
+            ttk.Button(self.root, text=text, command=lambda t=text: self.on_button_click(t)).grid(row=row, column=col, columnspan=cs, padx=5, pady=5)
 
     def on_button_click(self, char):
         if char == '=':
-            try:
-                result = eval(self.entry.get())
-                self.entry.delete(0, tk.END)
-                self.entry.insert(tk.END, str(result))
-            
-            except:
-                self.entry.delete(0, tk.END)
-                self.entry.insert(tk.END, "Error")
-       
+            self.evaluate_expression()
+        
         elif char.lower() == 'plot':
-            # Go to line 60 to see plot_function function    
             self.plot_function()
         
         else:
             self.entry.insert(tk.END, char)
 
-    def parse_expression(self, expression):
+    def evaluate_expression(self):
         try:
-            func, params = expression.split('(')
-            params = params.strip(')').split(',')
-            
-            if func in ['sin', 'cos', 'tan']:
-                return f'np.{func}(np.linspace({params[0]}, {params[1]}, {params[2]}))'
-        
-        except:
-            return expression
-
-    # Does the plotting
-    def plot_function(self):
-        try:
-            expression = self.entry.get()
-            parsed_expression = self.parse_expression(expression)
-            x, y = np.linspace(-10, 10, 400), eval(parsed_expression)
-            
-            # Go to line 70 to see plot function
-            self.plot(x, y, expression)
+            result = eval(self.entry.get(), {}, {"np": np})
+            self.entry.delete(0, tk.END)
+            self.entry.insert(tk.END, str(result))
         
         except Exception as e:
             self.entry.delete(0, tk.END)
+            self.entry.insert(tk.END, "Error")
+
+    def parse_expression(self, expression):
+        try:
+            func_name, params = expression.split('(')
+            params = params.rstrip(')').split(',')
+            xmin, xmax, num_points = map(float, params)
+            func_name = func_name.strip().lower()
+            
+            if func_name in ['sin', 'cos', 'tan']:
+                return func_name, xmin, xmax, int(num_points)
+        
+        except Exception:
+            pass
+        
+        raise ValueError("Invalid expression format")
+
+    def plot_function(self):
+        try:
+            expression = self.entry.get()
+            func_name, xmin, xmax, num_points = self.parse_expression(expression)
+            x = np.linspace(xmin, xmax, num_points)
+            y = getattr(np, func_name)(x)
+            self.plot(x, y, f'{func_name}(x) from {xmin} to {xmax} with {num_points} points')
+        
+        except Exception:
+            self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, "Invalid Expression")
 
-    # Shows the graph plotted
-    def plot(self, x, y, expression):
+    def plot(self, x, y, title):
         plt.figure()
         plt.plot(x, y)
-        plt.title(f'Graph of {expression}')
+        plt.title(f'Graph of {title}')
         plt.xlabel('x')
         plt.ylabel('y')
         plt.grid(True)
-        plt.axhline(0, color='black', lw=0.5)
-        plt.axvline(0, color='black', lw=0.5)
+        
+        def axline(color, lw) -> None:
+            plt.axhline(0, color=color, lw=lw)
+            plt.axvline(0, color=color, lw=lw)
+        
+        axline('black', 0.5)
         plt.show()
 
 
@@ -87,7 +93,6 @@ def main():
     root = tk.Tk()
     app = CalculatorApp(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
