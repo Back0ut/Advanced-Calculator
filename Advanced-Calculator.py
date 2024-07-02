@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
 import numpy as np
-
+from typing import Tuple
 
 class CalculatorApp:
     def __init__(self, root):
@@ -10,7 +10,7 @@ class CalculatorApp:
         self.root.title("Plotting an Arithmetic Calculator")
         self.create_widgets()
 
-    def create_widgets(self):
+    def create_widgets(self) -> None: # Creates general ui
         self.entry = ttk.Entry(self.root, width=40)
         self.entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
 
@@ -36,20 +36,22 @@ class CalculatorApp:
         else:
             self.entry.insert(tk.END, char)
 
-    def evaluate_expression(self):
+    def evaluate_expression(self) -> None:
         try:
             result = eval(self.entry.get(), {}, {"np": np})
+            
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, str(result))
         
-        except Exception as e:
+        except Exception:
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, "Error")
 
-    def parse_expression(self, expression):
+    def parse_expression(self, expression) -> Tuple[str, float, float, int]: # Parse graphing functions
         try:
             func_name, params = expression.split('(')
             params = params.rstrip(')').split(',')
+            
             xmin, xmax, num_points = map(float, params)
             func_name = func_name.strip().lower()
             
@@ -61,7 +63,7 @@ class CalculatorApp:
         
         raise ValueError('Invalid expression format')
 
-    def plot_function(self):
+    def plot_function(self) -> None:
         try:
             expression = self.entry.get()
             func_name, xmin, xmax, num_points = self.parse_expression(expression)
@@ -73,7 +75,7 @@ class CalculatorApp:
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, "Invalid Expression")
 
-    def plot(self, x, y, title):
+    def plot(self, x, y, title) -> None: # Calculate plotting and adds additional text for info
         plt.figure()
         plt.plot(x, y)
         plt.title(f'Graph of {title}')
