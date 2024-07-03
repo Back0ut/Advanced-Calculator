@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from typing import Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -35,8 +36,10 @@ class CalculatorApp:
     def on_button_click(self, char: str) -> None:
         if char == '=':
             self.evaluate_expression()
+        
         elif char.lower() == 'plot':
             self.plot_function()
+        
         else:
             self.entry.insert(tk.END, char)
 
