@@ -9,7 +9,7 @@ import numpy as np
 class CalculatorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Plotting an Arithmetic Calculator")
+        self.root.title("Plotting and Arithmetic Calculator")
         self.create_widgets()
 
     def create_widgets(self) -> None:  # Creates general UI
@@ -18,7 +18,7 @@ class CalculatorApp:
 
         buttons = [
             ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
-            ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('x', 2, 3),
+            ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('*', 2, 3),
             ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
             ('0', 4, 0), ('.', 4, 1), ('=', 4, 2), ('+', 4, 3),
             ('Plot', 5, 2, 2)
