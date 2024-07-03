@@ -45,6 +45,7 @@ class CalculatorApp:
             result = eval(self.entry.get(), {}, {"np": np})
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, str(result))
+        
         except Exception:
             self.entry.delete(0, tk.END)
             self.entry.insert(tk.END, "Error")
