@@ -29,8 +29,8 @@ class CalculatorApp:
             self.create_button(text, row, col, cs)
 
     def create_button(self, text: str, row: int, col: int, colspan: int = 1) -> None:
-        ttk.Button(self.root, text=text, command=lambda t=text: self.on_button_click(t)).grid(
-            row=row, column=col, columnspan=colspan, padx=5, pady=5
+        ttk.Button(self.root, text=text, command=lambda t=text: self.on_button_click(t)).grid(       
+            row=row, column=col, columnspan=colspan, padx=5, pady=5       
         )
 
     def on_button_click(self, char: str) -> None:
@@ -41,17 +41,20 @@ class CalculatorApp:
             self.plot_function()
         
         else:
-            self.entry.insert(tk.END, char)
+           self.entry.insert(tk.END, char)
 
     def evaluate_expression(self) -> None:
+        def entry_delete(first=0, last=tk.END):
+            self.entry.delete(first, last)
+        
         try:
             result = eval(self.entry.get(), {}, {"np": np})
-            self.entry.delete(0, tk.END)
+            entry_delete()
             self.entry.insert(tk.END, str(result))
         
         except Exception:
-            self.entry.delete(0, tk.END)
-            self.entry.insert(tk.END, "Error")
+            entry_delete()
+            self.entry.insert(tk.END, 'Error')
 
     def parse_expression(self, expression: str) -> Tuple[str, float, float, int]:  # Parse graphing functions
         try:
@@ -87,8 +90,13 @@ class CalculatorApp:
         plt.figure()
         plt.plot(x, y)
         plt.title(f'Graph of {title}')
-        plt.xlabel('x')
-        plt.ylabel('y')
+            
+        def label_axis(x, y):
+            plt.xlabel(x)
+            plt.ylabel(y)
+
+        label_axis('x', 'y')
+        
         plt.grid(True)
 
         for axline in [plt.axvline, plt.axhline]:
