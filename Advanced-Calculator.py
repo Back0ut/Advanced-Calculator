@@ -49,6 +49,7 @@ class CalculatorApp:
         
         try:
             result = eval(self.entry.get(), {}, {"np": np})
+            
             entry_delete()
             self.entry.insert(tk.END, str(result))
         
